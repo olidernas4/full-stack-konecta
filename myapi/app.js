@@ -268,19 +268,200 @@ app.get('/solicitudes', verifyToken, async (req, res) => {
  *         description: Server error
  */
 app.post('/solicitudes', verifyToken, async (req, res) => {
+  const { nombre, descripcion, resumen } = req.body;
+
+  try {
+      const result = await pool.query(
+          'INSERT INTO Solicitud (NOMBRE, DESCRIPCION, RESUMEN) VALUES ($1, $2, $3) RETURNING *',
+          [nombre, descripcion, resumen]
+      );
+      res.status(201).json(result.rows[0]);
+  } catch (err) {
+      console.error('Error creating solicitud:', err);
+      res.status(500).json({ error: err.message });
+  }
+});
+
+
+/**
+ * @swagger
+ * /solicitudes/{id}:
+ *   delete:
+ *     summary: Delete a request
+ *     tags: [Solicitud]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The request ID
+ *     responses:
+ *       204:
+ *         description: Request deleted successfully
+ *       403:
+ *         description: Access denied
+ *       500:
+ *         description: Server error
+ */
+app.delete('/solicitudes/:id', verifyToken, async (req, res) => {
   if (req.userRole !== 'Administrador') {
     console.error('Access denied for user:', req.userId);
     return res.status(403).json({ error: 'Access denied' });
   }
-  const { nombre, descripcion, resumen, id_empleado } = req.body;
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM Solicitud WHERE ID = $1', [id]);
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error deleting request:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+/**
+ * @swagger
+ * /empleados/{id}:
+ *   put:
+ *     summary: Update an employee
+ *     tags: [Empleado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The employee ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               tipo:
+ *                 type: integer
+ *               fecha_ingreso:
+ *                 type: string
+ *                 format: date
+ *               salario:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Employee updated successfully
+ *       403:
+ *         description: Access denied
+ *       500:
+ *         description: Server error
+ */
+app.put('/empleados/:id', verifyToken, async (req, res) => {
+  if (req.userRole !== 'Administrador') {
+    console.error('Access denied for user:', req.userId);
+    return res.status(403).json({ error: 'Access denied' });
+  }
+  const { id } = req.params;
+  const { nombre, tipo, fecha_ingreso, salario } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO Solicitud (NOMBRE, DESCRIPCION, RESUMEN, ID_EMPLEADO) VALUES ($1, $2, $3, $4) RETURNING *',
-      [nombre, descripcion, resumen, id_empleado]
+      'UPDATE Empleado SET NOMBRE = $1, TIPO = $2, FECHA_INGRESO = $3, SALARIO = $4 WHERE ID = $5 RETURNING *',
+      [nombre, tipo, fecha_ingreso, salario, id]
     );
-    res.status(201).json(result.rows[0]);
+    res.status(200).json(result.rows[0]);
   } catch (err) {
-    console.error('Error creating request:', err);
+    console.error('Error updating employee:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /empleados/{id}:
+ *   delete:
+ *     summary: Delete an employee
+ *     tags: [Empleado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The employee ID
+ *     responses:
+ *       204:
+ *         description: Employee deleted successfully
+ *       403:
+ *         description: Access denied
+ *       500:
+ *         description: Server error
+ */
+app.delete('/empleados/:id', verifyToken, async (req, res) => {
+  if (req.userRole !== 'Administrador') {
+    console.error('Access denied for user:', req.userId);
+    return res.status(403).json({ error: 'Access denied' });
+  }
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM Empleado WHERE ID = $1', [id]);
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error deleting employee:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /solicitudes/{id}:
+ *   put:
+ *     summary: Update a request
+ *     tags: [Solicitud]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The request ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               descripcion:
+ *                 type: string
+ *               resumen:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Request updated successfully
+ *       403:
+ *         description: Access denied
+ *       500:
+ *         description: Server error
+ */
+app.put('/solicitudes/:id', verifyToken, async (req, res) => {
+  if (req.userRole !== 'Administrador') {
+    console.error('Access denied for user:', req.userId);
+    return res.status(403).json({ error: 'Access denied' });
+  }
+  const { id } = req.params;
+  const { nombre, descripcion, resumen } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE Solicitud SET NOMBRE = $1, DESCRIPCION = $2, RESUMEN = $3 WHERE ID = $4 RETURNING *',
+      [nombre, descripcion, resumen, id]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating request:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -321,9 +502,16 @@ app.delete('/solicitudes/:id', verifyToken, async (req, res) => {
   }
 });
 
+
+
+
+
+
 // Integrate Swagger
 swaggerSetup(app);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+

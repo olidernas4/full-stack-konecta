@@ -1,0 +1,56 @@
+/* Estilo para la barra de navegación */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f7; 
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0; 
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar-title {
+    color: #333; 
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    text-align: left; 
+    flex: 1; 
+}
+
+/* Estilo para el botón de cierre de sesión */
+.logout-button {
+    background-color: #c9706b;
+    color: white;
+    border: none;
+    border-radius: 50%; 
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px; 
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.1s;
+    margin-left: 10px; 
+    margin-right: 30px;
+}
+
+.logout-button:hover {
+    background-color: #d2044c; 
+}
+
+.logout-button:active {
+    background-color: #c762bd; 
+    transform: scale(0.95); 
+}
+
+
+.table-container {
+    padding: 20px; 
+    margin-top: 60px;
+}
