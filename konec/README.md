@@ -4,7 +4,7 @@ Frontend: http://localhost
 Backend (API): http://localhost:3000/api-docs (documentación Swagger)
 
 Proyecto de Gestión de Empleados y Solicitudes
-Este proyecto incluye una aplicación completa para gestionar empleados y solicitudes, con funcionalidades de autenticación, autorización y una interfaz de usuario optimizada. A continuación, se describe cómo está estructurado el proyecto, las funcionalidades implementadas y cómo puedes comenzar a usarlo.
+Este proyecto incluye una aplicación completa para gestionar empleados y solicitudes, con funcionalidades de autenticación, autorización y una interfaz de usuario optimizada. A continuación, se describe cómo está estructurado el proyecto.
 
 Funcionalidades
 Autenticación y Autorización
